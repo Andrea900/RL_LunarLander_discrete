@@ -1,0 +1,27 @@
+\begin{algorithm}
+	Initialize: $\mathcal{D}$ - empty replay buffer; $\theta$  - initial network parameters, $\theta^{-}$ - copy of $\theta$\;
+	Initialize: $\mathit{N_{r}}$ - replay buffer maximum size; $\mathit{N_{b}}$ - training batch size; $\mathit{N^{-}}$ - target network replacement freq.\;
+	
+	\For{episode $e\in {1,2,..., M}$}{
+		Initialize frame sequence $\mathtt{x} \leftarrow ()$\;
+		\For{$t \in {0,1,...}$}{
+			Set state  $s \leftarrow \mathtt{x}$, sample action $\mathit{a \sim \pi_{\mathcal{B}}}$\;
+			Sample next frame $\mathit{x^{t}}$ from environment $\mathcal{E}$ given $\mathit{(s,a)}$ and receive reward $\mathit{r}$, and append $\mathit{x^{t}}$ to $\mathtt{x}$\;
+			\textbf{if} $\mathit{|\mathtt{x}| > N_{f}}$ \textbf{then} delete the oldest frame $\mathit{x_{t_{min}}}$ from $\mathtt{x}$ \textbf{end}\;
+			Set $s' \leftarrow \mathtt{x}$, and add transition tuple $\mathit{(s,a,r,s')}$ to $\mathcal{D}$, replacing the oldest tuple if $\mathit{|\mathcal{D}|} \geq N_{r}$\;
+			Sample a minibatch of $\mathit{N_{b}}$ tuples $\mathit{(s,a,r,s')} \sim$ Unif$\mathit{(D)}$\;
+			Construct target values, one for each of the $\mathit{N_{b}}$ tuples:\;
+			Define $\mathit{a^{max}(s';\theta)}= arg max_{a'}Q(s',a';\theta)$\;
+			
+			$\mathit{y_{j}}$ = 
+			\begin{cases}
+				${r}$ & $\text{if $s'$ is terminal}$\\
+				${r + \gamma Q(s',a^{max}(s';\theta);\theta^{-}),}$ & $\text{otherwise.}$\\
+			\end{cases}
+			
+			
+			Do a gradient descent step with loss on $\mathit{||y_{j}-Q(s,a;\theta)||^{\mathrm{2}}}$\;
+			Replace target parameters $\mathit{\theta^{-} \leftarrow \theta}$ every $\mathit{N^{-}}$ steps\;
+		}
+	}\caption{Double DQN Algorithm.}
+\end{algorithm}
