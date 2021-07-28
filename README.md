@@ -15,5 +15,5 @@ Python packages:
 * ``Box2D``
 * ``PyVirtualDisplay``
 
-Ubuntu deb package (for a Docker-based env. on Windows):
+Ubuntu ``.deb`` package (for a Docker-based env. on Windows):
 * ``xvfb``
